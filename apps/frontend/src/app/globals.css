@@ -120,3 +120,12 @@
     @apply bg-background text-foreground;
   }
 }
+
+button {
+  cursor: pointer;
+  transition: transform 0.1s;
+
+  &:active {
+    transform: scale(0.9) ;
+  }
+}
