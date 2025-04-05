@@ -90,9 +90,9 @@ export function HeroCarousel() {
                         key={index}
                         onClick={() => scrollTo(index)}
                         className={clsx(
-                            "w-3 h-3 rounded-full transition-all duration-300",
+                            "w-2 h-2 rounded-full transition-all duration-300",
                             selectedIndex === index
-                                ? "bg-cyan-400 scale-110 shadow"
+                                ? "bg-cyan-400 scale-125 shadow"
                                 : "bg-cyan-200/50 hover:bg-cyan-200"
                         )}
                         aria-label={`Go to slide ${index + 1}`}

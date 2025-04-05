@@ -45,7 +45,7 @@
 
 :root {
   --radius: 0.3rem;
-  --background: oklch(1 0 0);
+  --background: rgb(243, 244, 246);
   --foreground: oklch(0.141 0.005 285.823);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.141 0.005 285.823);
@@ -117,7 +117,8 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply text-foreground;
+    background-color: var(--background);
   }
 }
 
@@ -126,6 +127,19 @@ button {
   transition: transform 0.1s;
 
   &:active {
-    transform: scale(0.9) ;
+    transform: scale(0.9);
+  }
+}
+
+::selection {
+  @apply bg-cyan-300;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
   }
 }
