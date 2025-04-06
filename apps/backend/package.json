@@ -15,14 +15,21 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "argon2": "^0.41.1",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
-    "mongoose": "^8.13.2"
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.13.2",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
     "@types/express": "^5.0.0",
+    "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^22.10.5",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.8",
     "@typescript-eslint/eslint-plugin": "^8.19.0",
     "@typescript-eslint/parser": "^8.19.0",
     "eslint": "^9.17.0",
