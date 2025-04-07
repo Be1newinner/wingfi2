@@ -3,6 +3,7 @@ import { AddressModel } from "../models/address.models";
 import { CartModel } from "../models/carts.model";
 import { OrderModel } from "../models/orders.model";
 import AppError from "../utils/AppError";
+import { SendResponse } from "@/utils/JsonResponse";
 
 const getOrderDetailsByID = (
   req: Request,
@@ -75,7 +76,7 @@ const generateOrder = async (
       })
       .lean();
 
-    if (!cartData) throw new Error("Cart Doesn't Exist for this User!");
+    if (!cartData) next(new AppError("Cart Doesn't Exist for this User!", 404));
 
     // console.log({ cartData });
 
@@ -105,20 +106,20 @@ const generateOrder = async (
         state: addressData.state,
         zipcode: addressData.zipcode,
       },
-      items: cartData.items,
+      items: cartData?.items,
       uid,
       shippingFee,
-      subtotal: cartData.subtotal,
-      tax: cartData.tax,
-      discount: cartData.discount,
+      subtotal: cartData?.subtotal,
+      tax: cartData?.tax,
+      discount: cartData?.discount,
     });
 
     await CartModel.deleteOne({ _id: uid });
 
-    res.status(201).json({
-      error: null,
-      message: "generate Order success!",
+    SendResponse(res, {
       data: orderResponse,
+      message: "Generate Order success!",
+      status_code: 201,
     });
   } catch (error) {
     console.error(error);

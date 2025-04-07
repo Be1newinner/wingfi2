@@ -4,7 +4,8 @@ import { verifyHash } from "../utils/hashing";
 import { decodeToken, generateLoginTokens } from "../utils/tokens";
 import AppError from "../utils/AppError";
 import { SendResponse } from "../utils/JsonResponse";
-import { UserStored } from "../types/user.types";
+import { LoginDTO } from "@/dto/auth/login.dto";
+import { RegisterDTO } from "@/dto/auth/register.dto";
 
 export async function loginController(
   req: Request,
@@ -12,7 +13,8 @@ export async function loginController(
   next: NextFunction
 ) {
   try {
-    const { email, password } = req.body;
+    const { email, password } = req.body as LoginDTO;
+
     const user = await UserModel.findOne({ email }).lean();
 
     if (!user) return next(new AppError("User Logged In Failed!", 404));
@@ -77,7 +79,8 @@ export async function registerController(
   next: NextFunction
 ) {
   try {
-    const { email, password, name, gender, role, phone } = <UserStored>req.body;
+    const { email, password, name, gender, role, phone } =
+      req.body as RegisterDTO;
 
     const userData = new UserModel({
       email,

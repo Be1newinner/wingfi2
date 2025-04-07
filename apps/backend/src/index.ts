@@ -1,4 +1,5 @@
 import "dotenv/config";
+import "reflect-metadata";
 
 import express from "express";
 import { connectDB } from "./config/db";
@@ -8,6 +9,7 @@ import { CartRouter } from "./routes/carts.route";
 import { AddressRouter } from "./routes/address.route";
 import { OrderRouter } from "./routes/orders.route";
 import { ProductRouter } from "./routes/products.route";
+import { errorHandler } from "./middlewares/error.middleware";
 
 const app = express();
 const PORT = process.env.PORT || 8000;
@@ -25,6 +27,8 @@ app.use("/users", AuthRouter);
 app.use("/cart", CartRouter);
 app.use("/address", AddressRouter);
 app.use("/orders", OrderRouter);
+
+app.use(errorHandler);
 
 let server;
 

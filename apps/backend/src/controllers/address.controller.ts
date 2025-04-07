@@ -3,6 +3,7 @@ import { AddressModel } from "../models/address.models";
 import { UserModel } from "../models/users.model";
 import { NextFunction, Request, Response } from "express";
 import AppError from "../utils/AppError";
+import { SendResponse } from "@/utils/JsonResponse";
 
 async function getAllAddressByUID(
   req: Request,
@@ -15,7 +16,10 @@ async function getAllAddressByUID(
     const page = Math.max(Number(req.query.page) || 1, 1);
     const skip = (page - 1) * limit;
 
-    if (!Types.ObjectId.isValid(uid)) throw new Error("Invalid user ID!");
+    if (!Types.ObjectId.isValid(uid)) {
+      next(new AppError("Invalid user ID!", 401));
+      return;
+    }
 
     const addressData = await AddressModel.find({
       uid,
@@ -24,11 +28,15 @@ async function getAllAddressByUID(
       .skip(skip)
       .lean();
 
-    if (!addressData.length) throw new Error("No Address found for this user!");
+    if (!addressData.length) {
+      next(new AppError("No Address found for this user!", 401));
+      return;
+    }
 
-    res.send({
+    SendResponse(res, {
       data: addressData,
-      error: null,
+      status_code: 200,
+      message: "Addresses fetched successfully!",
     });
   } catch (error) {
     console.error(error);
@@ -50,15 +58,22 @@ async function getSingleAddressByID(
   try {
     const { id } = req.params;
 
-    if (!Types.ObjectId.isValid(id)) throw new Error("Invalid Address ID!");
+    if (!Types.ObjectId.isValid(id)) {
+      next(new AppError("Invalid Address ID!", 401));
+      return;
+    }
 
     const addressData = await AddressModel.findById(id).lean();
 
-    if (!addressData) throw new Error("No Address found for this id!");
+    if (!addressData) {
+      next(new AppError("No Address found for this id!", 401));
+      return;
+    }
 
-    res.send({
+    SendResponse(res, {
       data: addressData,
-      error: null,
+      status_code: 200,
+      message: "Address fetched successfully!",
     });
   } catch (error) {
     console.error(error);
@@ -81,7 +96,10 @@ async function updateAddressByID(
     const { id } = req.params;
     const { name, phone, address1, address2, city, state, zipcode } = req.body;
 
-    if (!Types.ObjectId.isValid(id)) throw new Error("Invalid Address ID!");
+    if (!Types.ObjectId.isValid(id)) {
+      next(new AppError("Invalid Address ID!", 401));
+      return;
+    }
 
     const addressData = await AddressModel.findByIdAndUpdate(
       id,
@@ -104,9 +122,10 @@ async function updateAddressByID(
       return;
     }
 
-    res.send({
+    SendResponse(res, {
       data: addressData,
-      error: null,
+      status_code: 200,
+      message: "Address updated successfully!",
     });
   } catch (error) {
     console.error(error);
@@ -139,15 +158,25 @@ async function addAddressByUID(
       !zipcode ||
       !uid
     ) {
-      throw new Error(
-        "all required fields are not provided. name, phone, address1, address2, city, state, zipcode, uid"
+      next(
+        new AppError(
+          "all required fields are not provided. name, phone, address1, address2, city, state, zipcode, uid",
+          401
+        )
       );
+      return;
     }
 
-    if (!Types.ObjectId.isValid(uid)) throw new Error("Invalid user ID!");
+    if (!Types.ObjectId.isValid(uid)) {
+      next(new AppError("Invalid user ID!", 401));
+      return;
+    }
 
     const isUserExist = await UserModel.exists({ _id: uid });
-    if (!isUserExist) throw new Error("User Doesn't Exist!");
+    if (!isUserExist) {
+      next(new AppError("User Doesn't Exist!", 404));
+      return;
+    }
 
     const addressData = await AddressModel.insertOne({
       name,
@@ -160,11 +189,10 @@ async function addAddressByUID(
       uid,
     });
 
-    // console.log({ addressData });
-
-    res.send({
+    SendResponse(res, {
       data: addressData,
-      error: null,
+      status_code: 201,
+      message: "Address added successfully!",
     });
   } catch (error) {
     console.error(error);
@@ -186,19 +214,20 @@ async function deleteAddressByID(
   try {
     const { id } = req.params;
 
-    if (!Types.ObjectId.isValid(id)) throw new Error("Invalid address!");
+    if (!Types.ObjectId.isValid(id)) {
+      next(new AppError("Invalid address!", 404));
+      return;
+    }
 
     const addressData = await AddressModel.deleteOne({ _id: id }).exec();
 
     if (addressData.deletedCount) {
-      res.send({
-        data: null,
-        error: null,
-        message: "Address Deleted Successfully!",
+      SendResponse(res, {
+        status_code: 200,
+        message: "Address deleted successfully!",
       });
-      return;
     } else {
-      throw new Error("Address not deleted!");
+      next(new AppError("Address deletion failed!", 500));
     }
   } catch (error) {
     console.error(error);

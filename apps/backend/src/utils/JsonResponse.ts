@@ -1,15 +1,19 @@
 import { Response } from "express";
 
+// enum status {
+//   success = "success",
+//   error = "error",
+// }
+
 type JSONResponseType = {
-  // we will come to it later!
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data?: any;
-  // we will come to it later!
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   meta?: any;
   status_code?: number;
   application_code?: number;
   message?: string;
+  status?: "success" | "error";
 };
 
 function JSONResponse({
@@ -18,6 +22,7 @@ function JSONResponse({
   status_code = 200,
   application_code,
   message = "Operation success!",
+  status = "success",
 }: JSONResponseType) {
   return {
     data,
@@ -25,6 +30,7 @@ function JSONResponse({
     status_code,
     application_code: application_code || status_code,
     message,
+    status,
   };
 }
 

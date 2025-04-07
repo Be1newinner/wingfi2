@@ -1,11 +1,11 @@
 import AppError from "../utils/AppError";
-
 import { CartModel } from "../models/carts.model";
 import { TAX } from "../constants/rates";
 import { ProductModel } from "../models/product.model";
 import { Types } from "mongoose";
 import { UserModel } from "../models/users.model";
 import { NextFunction, Request, Response } from "express";
+import { SendResponse } from "@/utils/JsonResponse";
 
 async function increaseItemQuanityInCartController(
   req: Request,
@@ -18,22 +18,20 @@ async function increaseItemQuanityInCartController(
 
     const _id = req.user?.uid;
 
-    if (!product_id || !_id || !action || !quantity) {
-      res.send({
-        error: "All keys are required. product_id, uid, action, quantity!",
-        data: null,
-      });
-      return;
-    }
+    if (!product_id || !_id || !action || !quantity)
+      return next(
+        new AppError(
+          "All keys are required. product_id, uid, action, quantity!",
+          401
+        )
+      );
 
     const userId = new Types.ObjectId(_id);
     const productId = new Types.ObjectId(product_id);
 
-    // Checking if User Exist
     const userExist = await UserModel.exists({ _id: userId });
-    if (!userExist) throw new Error("User doesn't exist!");
+    if (!userExist) return next(new AppError("User doesn't exist!", 404));
 
-    // Checking if Product Exist
     const product = await ProductModel.findById(productId)
       .select({
         price: true,
@@ -41,13 +39,11 @@ async function increaseItemQuanityInCartController(
         discount: true,
       })
       .lean();
-    if (!product) throw new Error("Product doesn't exist!");
+    if (!product) return next(new AppError("Product doesn't exist!", 404));
 
     const taxCalculated = TAX * product.price * quantity;
     const totalPrice = product.price * quantity;
-    // const totalMrp = product.mrp * quantity;
 
-    // Updateing Cart
     let factor = action === "INCREASE" ? 1 : -1;
 
     let updatedProduct = await CartModel.updateOne(
@@ -175,9 +171,7 @@ async function increaseItemQuanityInCartController(
       { upsert: false }
     );
 
-    // We will use this to add a new product in Cart if it was not found in step 3
-
-    if (action == "INCREASE" && updatedProduct.matchedCount == 0) {
+    if (action == "INCREASE" && updatedProduct.matchedCount === 0) {
       updatedProduct = await CartModel.updateOne(
         {
           _id: userId,
@@ -205,28 +199,27 @@ async function increaseItemQuanityInCartController(
         }
       );
 
-      res.send({
+      return SendResponse(res, {
         data: updatedProduct,
-        error: null,
         message: "Item added to the array!",
-      });
-      return;
-    } else {
-      await CartModel.deleteOne({ _id: userId, total: { $lte: 0 } });
-
-      res.send({
-        data: updatedProduct,
-        error: null,
-        message: "Quantity updated for product!",
+        status_code: 200,
       });
     }
+
+    await CartModel.deleteOne({ _id: userId, total: { $lte: 0 } });
+
+    return SendResponse(res, {
+      data: updatedProduct,
+      message: "Quantity updated for product!",
+      status_code: 200,
+    });
   } catch (error) {
-    const errMessage =
-      error instanceof AppError ? error.message : "Cart updating failed!";
-
-    const errCode = error instanceof AppError ? error.statusCode : 500;
-
-    next(new AppError(errMessage, errCode));
+    return next(
+      new AppError(
+        error instanceof AppError ? error.message : "Cart updating failed!",
+        error instanceof AppError ? error.statusCode : 500
+      )
+    );
   }
 }
 
@@ -237,22 +230,23 @@ async function getCartController(
 ) {
   try {
     const _id = req.user?.uid;
+    if (!_id) return next(new AppError("Unauthorized user!", 401));
 
     const data = await CartModel.findById(_id);
-
     if (!data) return next(new AppError("No Products Found!", 404));
 
-    res.status(200).json({
-      message: "Products Fetched Successfully!",
+    return SendResponse(res, {
       data,
+      message: "Products Fetched Successfully!",
+      status_code: 200,
     });
   } catch (error) {
-    const errMessage =
-      error instanceof AppError ? error.message : "Cart updating failed!";
-
-    const errCode = error instanceof AppError ? error.statusCode : 500;
-
-    next(new AppError(errMessage, errCode));
+    return next(
+      new AppError(
+        error instanceof AppError ? error.message : "Cart fetching failed!",
+        error instanceof AppError ? error.statusCode : 500
+      )
+    );
   }
 }
 

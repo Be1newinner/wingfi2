@@ -4,13 +4,12 @@ import AppError from "../utils/AppError";
 
 export function errorHandler(
   err: unknown,
-  _: Request,
+  _req: Request,
   res: Response,
-  __: NextFunction
+  _next: NextFunction
 ) {
   // console.error("Error:", err);
-
-  console.log(typeof res);
+  // console.log({ ERROR: "ERROR MIDDLEWARE" });
 
   if (!res || typeof res.status !== "function") return;
 
@@ -22,5 +21,5 @@ export function errorHandler(
     status_code = err.statusCode;
   }
 
-  SendResponse(res, { message, status_code });
+  SendResponse(res, { message, status_code, status: "error" });
 }

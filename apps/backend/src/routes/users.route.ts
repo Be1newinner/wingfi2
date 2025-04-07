@@ -4,6 +4,9 @@ import {
   refreshToken,
   registerController,
 } from "../controllers/users.controller";
+import { validate_dto_middleWare } from "@/middlewares/validateDTO.middleware";
+import { LoginDTO } from "@/dto/auth/login.dto";
+import { RegisterDTO } from "@/dto/auth/register.dto";
 
 export const AuthRouter = Router();
 
@@ -118,7 +121,7 @@ export const AuthRouter = Router();
  *       404:
  *         description: No user found
  */
-AuthRouter.post("/login", loginController);
+AuthRouter.post("/login", validate_dto_middleWare(LoginDTO), loginController);
 
 /**
  * @swagger
@@ -140,7 +143,11 @@ AuthRouter.post("/login", loginController);
  *       409:
  *         description: Email already exists
  */
-AuthRouter.post("/register", registerController);
+AuthRouter.post(
+  "/register",
+  validate_dto_middleWare(RegisterDTO),
+  registerController
+);
 
 /**
  * @swagger
