@@ -16,13 +16,15 @@ async function increaseItemQuanityInCartController(
     const { product_id, action = "INCREASE" } = req.body;
     const quantity = 1;
 
-    const _id = req.user?._id;
+    const _id = req.user?.uid;
 
-    if (!product_id || !_id || !action || !quantity)
-      return res.send({
+    if (!product_id || !_id || !action || !quantity) {
+      res.send({
         error: "All keys are required. product_id, uid, action, quantity!",
         data: null,
       });
+      return;
+    }
 
     const userId = new Types.ObjectId(_id);
     const productId = new Types.ObjectId(product_id);
@@ -203,15 +205,16 @@ async function increaseItemQuanityInCartController(
         }
       );
 
-      return res.send({
+      res.send({
         data: updatedProduct,
         error: null,
         message: "Item added to the array!",
       });
+      return;
     } else {
       await CartModel.deleteOne({ _id: userId, total: { $lte: 0 } });
 
-      return res.send({
+      res.send({
         data: updatedProduct,
         error: null,
         message: "Quantity updated for product!",
@@ -223,7 +226,7 @@ async function increaseItemQuanityInCartController(
 
     const errCode = error instanceof AppError ? error.statusCode : 500;
 
-    return next(new AppError(errMessage, errCode));
+    next(new AppError(errMessage, errCode));
   }
 }
 
@@ -233,13 +236,13 @@ async function getCartController(
   next: NextFunction
 ) {
   try {
-    const _id = req.user?._id;
+    const _id = req.user?.uid;
 
     const data = await CartModel.findById(_id);
 
     if (!data) return next(new AppError("No Products Found!", 404));
 
-    return res.status(200).json({
+    res.status(200).json({
       message: "Products Fetched Successfully!",
       data,
     });
@@ -249,7 +252,7 @@ async function getCartController(
 
     const errCode = error instanceof AppError ? error.statusCode : 500;
 
-    return next(new AppError(errMessage, errCode));
+    next(new AppError(errMessage, errCode));
   }
 }
 

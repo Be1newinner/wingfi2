@@ -8,13 +8,14 @@
     "build": "npx tsc",
     "lint": "npx eslint src",
     "lint:fix": "npx eslint src --fix",
-    "ts": "npx tsx --noEmit"
+    "ts": "npx tsc --noEmit"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@google-cloud/storage": "^7.16.0",
     "argon2": "^0.41.1",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",

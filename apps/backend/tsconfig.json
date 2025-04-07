@@ -11,6 +11,6 @@
     "allowImportingTsExtensions": true,
     "noEmit": true
   },
-  "include": ["src/**/*", "src/index.ts"],
-  "exclude": ["node_modules", "eslint.config.js", "loader.mjs", "dist"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "eslint.config.js", "loader.mjs", "dist", "__tests__"]
 }

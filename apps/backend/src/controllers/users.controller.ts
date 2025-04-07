@@ -1,9 +1,10 @@
 import { NextFunction, Request, Response } from "express";
-import { UserModel, UserStored } from "../models/users.model.ts";
+import { UserModel } from "../models/users.model.ts";
 import { verifyHash } from "../utils/hashing.ts";
 import { decodeToken, generateLoginTokens } from "../utils/tokens.ts";
 import AppError from "../utils/AppError.ts";
 import { SendResponse } from "../utils/JsonResponse.ts";
+import { UserStored } from "../interfaces/user.interfaces.ts";
 
 export async function loginController(
   req: Request,
@@ -24,7 +25,7 @@ export async function loginController(
     const tokens = await generateLoginTokens({
       email: user.email,
       role: user.role,
-      _id: user._id as string,
+      uid: user._id as string,
     });
 
     const updateResult = await UserModel.updateOne(
@@ -130,7 +131,7 @@ export async function refreshToken(
 
     const tokens = await generateLoginTokens({
       email: user.email,
-      _id: user._id.toString(),
+      uid: user._id.toString(),
       role: user.role,
     });
 

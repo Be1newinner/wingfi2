@@ -1,21 +1,35 @@
 import { Router } from "express";
+
 import {
-  AddNewProductController,
-  ProductsListController,
+  addListOfProductsController,
+  addProductController,
+  deleteProductByID,
+  fetchProductController,
+  fetchProductsListController,
+  updateSingleProductController,
 } from "../controllers/products.controllers.ts";
 
-const productRouter = Router();
+import { VerifyAccessTokenMiddleWare } from "../middlewares/VerifyAccessToken.ts";
 
-productRouter
+export const ProductRouter = Router();
+
+ProductRouter.route("/").get(fetchProductsListController);
+
+ProductRouter
+  .use(VerifyAccessTokenMiddleWare)
   .route("/")
-  .get(ProductsListController)
-  .post(AddNewProductController);
+  .post(addProductController)
+  .patch(updateSingleProductController);
 
-// productRouter.route("/").get(GetListOfProducts);
-// productRouter.route("/").post(AddSingleProductController);
-// productRouter.route("/").patch(UpdateSingleProductController);
-// productRouter.route("/bulk").post(AddListOfProductsController);
-// productRouter.route("/:sku").get(GetSingleProduct);
-// productRouter.route("/:sku").delete(deleteProductByID);
+ProductRouter
+  .use(VerifyAccessTokenMiddleWare)
+  .route("/bulk")
+  .post(addListOfProductsController);
 
-export default productRouter;
+ProductRouter
+  .use(VerifyAccessTokenMiddleWare)
+  .route("/:sku")
+  .delete(deleteProductByID);
+
+ProductRouter.route("/:sku").get(fetchProductController);
+

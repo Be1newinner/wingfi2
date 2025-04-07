@@ -26,7 +26,7 @@ async function getAllAddressByUID(
 
     if (!addressData.length) throw new Error("No Address found for this user!");
 
-    return res.send({
+    res.send({
       data: addressData,
       error: null,
     });
@@ -38,7 +38,7 @@ async function getAllAddressByUID(
 
     const errCode = error instanceof AppError ? error.statusCode : 500;
 
-    return next(new AppError(errMessage, errCode));
+    next(new AppError(errMessage, errCode));
   }
 }
 
@@ -56,7 +56,7 @@ async function getSingleAddressByID(
 
     if (!addressData) throw new Error("No Address found for this id!");
 
-    return res.send({
+    res.send({
       data: addressData,
       error: null,
     });
@@ -68,7 +68,7 @@ async function getSingleAddressByID(
 
     const errCode = error instanceof AppError ? error.statusCode : 500;
 
-    return next(new AppError(errMessage, errCode));
+    next(new AppError(errMessage, errCode));
   }
 }
 
@@ -100,10 +100,11 @@ async function updateAddressByID(
     ).lean();
 
     if (!addressData) {
-      return res.status(404).json({ error: "Address not found!" });
+      res.status(404).json({ error: "Address not found!" });
+      return;
     }
 
-    return res.send({
+    res.send({
       data: addressData,
       error: null,
     });
@@ -115,7 +116,7 @@ async function updateAddressByID(
 
     const errCode = error instanceof AppError ? error.statusCode : 500;
 
-    return next(new AppError(errMessage, errCode));
+    next(new AppError(errMessage, errCode));
   }
 }
 
@@ -159,9 +160,9 @@ async function addAddressByUID(
       uid,
     });
 
-    console.log({ addressData });
+    // console.log({ addressData });
 
-    return res.send({
+    res.send({
       data: addressData,
       error: null,
     });
@@ -173,7 +174,7 @@ async function addAddressByUID(
 
     const errCode = error instanceof AppError ? error.statusCode : 500;
 
-    return next(new AppError(errMessage, errCode));
+    next(new AppError(errMessage, errCode));
   }
 }
 
@@ -190,11 +191,12 @@ async function deleteAddressByID(
     const addressData = await AddressModel.deleteOne({ _id: id }).exec();
 
     if (addressData.deletedCount) {
-      return res.send({
+      res.send({
         data: null,
         error: null,
         message: "Address Deleted Successfully!",
       });
+      return;
     } else {
       throw new Error("Address not deleted!");
     }
@@ -206,7 +208,7 @@ async function deleteAddressByID(
 
     const errCode = error instanceof AppError ? error.statusCode : 500;
 
-    return next(new AppError(errMessage, errCode));
+    next(new AppError(errMessage, errCode));
   }
 }
 

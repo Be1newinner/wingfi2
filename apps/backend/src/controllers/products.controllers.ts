@@ -4,7 +4,7 @@ import { ProductModel } from "../models/product.model.ts";
 import AppError from "../utils/AppError.ts";
 import { MongooseError } from "mongoose";
 
-export const ProductsListController = async (
+export const fetchProductsListController = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -77,7 +77,7 @@ export const fetchProductController = async (
   }
 };
 
-export const AddNewProductController = async (
+export const addProductController = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -127,7 +127,7 @@ export const AddNewProductController = async (
 };
 
 // Add Multiple Products
-export async function AddListOfProductsController(
+export async function addListOfProductsController(
   req: Request,
   res: Response,
   next: NextFunction
@@ -158,7 +158,7 @@ export async function AddListOfProductsController(
 }
 
 // Update Single Product by SKU
-export async function UpdateSingleProductController(
+export async function updateSingleProductController(
   req: Request,
   res: Response,
   next: NextFunction

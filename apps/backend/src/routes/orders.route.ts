@@ -1,19 +1,28 @@
-const { Router } = require("express");
-const {
-    generateOrder,
-    getAllOrdersByUID,
-    getOrderDetailsByID,
-    updateOrderByID
-} = require("../controllers/orders.controller.js");
-const { VerifyAccessTokenMiddleWare } = require("../middleware/VerifyAccessToken.js");
+import { Router } from "express";
 
-const OrderRouter = Router()
+import {
+  generateOrder,
+  getAllOrdersByUID,
+  getOrderDetailsByID,
+  updateOrderByID,
+} from "../controllers/orders.controller.ts";
 
-OrderRouter.post("/", VerifyAccessTokenMiddleWare, generateOrder)
-OrderRouter.get("/all", VerifyAccessTokenMiddleWare, getAllOrdersByUID)
-OrderRouter.get("/single/:id", VerifyAccessTokenMiddleWare, getOrderDetailsByID)
-OrderRouter.patch("/:id", VerifyAccessTokenMiddleWare, updateOrderByID)
+import { VerifyAccessTokenMiddleWare } from "../middlewares/VerifyAccessToken.ts";
 
-module.exports = {
-    OrderRouter
-}
+const OrderRouter = Router();
+
+OrderRouter.post("/", VerifyAccessTokenMiddleWare, generateOrder);
+
+OrderRouter.get("/all", VerifyAccessTokenMiddleWare, getAllOrdersByUID);
+
+OrderRouter.get(
+  "/single/:id",
+  VerifyAccessTokenMiddleWare,
+  getOrderDetailsByID
+);
+
+OrderRouter.patch("/:id", VerifyAccessTokenMiddleWare, updateOrderByID);
+
+export {
+  OrderRouter,
+};

@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { ROLE } from "../models/users.model.ts";
+import { ROLE } from "../interfaces/user.interfaces.ts";
 
 type Unit =
   | "Years"
@@ -64,7 +64,7 @@ export async function generateToken(
 export type TokenPayload = {
   email: string;
   role: ROLE;
-  _id: string;
+  uid: string;
 };
 
 /**
@@ -75,7 +75,7 @@ export type TokenPayload = {
 export async function generateLoginTokens({
   email,
   role,
-  _id,
+  uid,
 }: TokenPayload): Promise<{ accessToken: string; refreshToken: string }> {
   const refreshExpiry =
     (process.env.JWT_REFRESH_EXPIRY as JWT_EXPIRY_FORMAT) || "7d";
@@ -83,27 +83,27 @@ export async function generateLoginTokens({
   if (!refreshExpiry) throw new Error("JWT_REFRESH_EXPIRY is required!");
 
   return {
-    accessToken: await generateAccessToken({ email, role, _id }),
-    refreshToken: await generateToken({ email, role, _id }, refreshExpiry),
+    accessToken: await generateAccessToken({ email, role, uid }),
+    refreshToken: await generateToken({ email, role, uid }, refreshExpiry),
   };
 }
 
-export async function generateAccessToken({ email, role, _id }: TokenPayload) {
+export async function generateAccessToken({ email, role, uid }: TokenPayload) {
   const accessExpiry =
     (process.env.JWT_SHORT_EXPIRY as JWT_EXPIRY_FORMAT) || "1d";
 
   if (!accessExpiry) throw new Error("JWT_ACCESS_EXPIRY is required!");
 
-  return await generateToken({ email, role, _id }, accessExpiry);
+  return await generateToken({ email, role, uid }, accessExpiry);
 }
 
-export async function generateRefreshToken({ email, role, _id }: TokenPayload) {
+export async function generateRefreshToken({ email, role, uid }: TokenPayload) {
   const accessExpiry =
     (process.env.JWT_SHORT_EXPIRY as JWT_EXPIRY_FORMAT) || "1d";
 
   if (!accessExpiry) throw new Error("JWT_ACCESS_EXPIRY is required!");
 
-  return await generateToken({ email, role, _id }, accessExpiry);
+  return await generateToken({ email, role, uid }, accessExpiry);
 }
 
 export async function decodeToken(token: string): Promise<TokenPayload> {
