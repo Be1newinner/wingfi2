@@ -23,6 +23,4 @@ OrderRouter.get(
 
 OrderRouter.patch("/:id", VerifyAccessTokenMiddleWare, updateOrderByID);
 
-export {
-  OrderRouter,
-};
+export { OrderRouter };
