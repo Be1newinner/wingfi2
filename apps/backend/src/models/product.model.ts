@@ -1,6 +1,7 @@
-import { model, Schema } from "mongoose";
+import { Schema, model } from "mongoose";
+import { IProduct } from "../interfaces/product.interfaces.ts";
 
-export const productSchema = new Schema(
+export const productSchema = new Schema<IProduct>(
   {
     sku: {
       type: String,
@@ -25,6 +26,7 @@ export const productSchema = new Schema(
         url: String,
       },
     ],
+    discount: Number,
   },
   { autoIndex: true }
 );

@@ -4,7 +4,7 @@ import AppError from "../utils/AppError.ts";
 
 export async function VerifyAccessTokenMiddleWare(
   req: Request,
-  res: Response,
+  _res: Response,
   next: NextFunction
 ) {
   try {

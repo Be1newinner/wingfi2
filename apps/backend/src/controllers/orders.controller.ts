@@ -1,45 +1,68 @@
-import { AddressModel } from "../models/";
+import { NextFunction, Request, Response } from "express";
+import { AddressModel } from "../models/address.models.ts";
 import { CartModel } from "../models/carts.model.ts";
 import { OrderModel } from "../models/orders.model.ts";
+import AppError from "../utils/AppError.ts";
 
-const getOrderDetailsByID = (req, res) => {
+const getOrderDetailsByID = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
   } catch (error) {
-    res.status(500).json({
-      error: error.message,
-      message: "Unable to retrieve Order Detail",
-      data: null,
-    });
+    console.error(error);
+
+    const errMessage =
+      error instanceof AppError
+        ? error.message
+        : "Unable to retrieve Order Detail";
+
+    const errCode = error instanceof AppError ? error.statusCode : 500;
+
+    return next(new AppError(errMessage, errCode));
   }
 };
 
-const getAllOrdersByUID = (req, res) => {
+const getAllOrdersByUID = (req: Request, res: Response, next: NextFunction) => {
   try {
   } catch (error) {
-    res.status(500).json({
-      error: error.message,
-      message: "Unable to retrieve orders",
-      data: null,
-    });
+    console.error(error);
+
+    const errMessage =
+      error instanceof AppError ? error.message : "Unable to retrieve orders";
+
+    const errCode = error instanceof AppError ? error.statusCode : 500;
+
+    return next(new AppError(errMessage, errCode));
   }
 };
 
-const updateOrderByID = (req, res) => {
+const updateOrderByID = (req: Request, res: Response, next: NextFunction) => {
   try {
   } catch (error) {
-    res.status(500).json({
-      error: error.message,
-      message: "Unable to update order detail",
-      data: null,
-    });
+    console.error(error);
+
+    const errMessage =
+      error instanceof AppError
+        ? error.message
+        : "Unable to update order detail!";
+
+    const errCode = error instanceof AppError ? error.statusCode : 500;
+
+    return next(new AppError(errMessage, errCode));
   }
 };
 
-const generateOrder = async (req, res) => {
+const generateOrder = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { address, shippingFee } = req.body;
 
-    const { uid } = req.locals;
+    const uid = req.user?.uid;
 
     const cartData = await CartModel.findById(uid)
       .select({
@@ -98,15 +121,18 @@ const generateOrder = async (req, res) => {
       data: orderResponse,
     });
   } catch (error) {
-    res.status(500).json({
-      error: error.message,
-      message: "Unable to generate Order!",
-      data: null,
-    });
+    console.error(error);
+
+    const errMessage =
+      error instanceof AppError ? error.message : "Unable to generate Order!";
+
+    const errCode = error instanceof AppError ? error.statusCode : 500;
+
+    return next(new AppError(errMessage, errCode));
   }
 };
 
-module.exports = {
+export {
   getOrderDetailsByID,
   getAllOrdersByUID,
   updateOrderByID,

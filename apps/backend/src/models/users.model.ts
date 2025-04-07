@@ -1,30 +1,6 @@
-import { Document, model, Schema } from "mongoose";
+import { model, Schema } from "mongoose";
 import { hashing } from "../utils/hashing.ts";
-
-export enum GENDER {
-  "MALE" = "MALE",
-  "FEMALE" = "FEMALE",
-  "OTHER" = "OTHER",
-}
-
-export enum ROLE {
-  CLIENT = "CLIENT",
-  VENDOR = "VENDOR",
-  ADMIN = "ADMIN",
-}
-
-export interface UserBase {
-  name: string;
-  email: string;
-  phone: number;
-  gender: GENDER;
-  role: ROLE;
-}
-
-export interface UserStored extends Document, UserBase {
-  password: string;
-  refreshToken: string;
-}
+import { GENDER, ROLE, UserStored } from "../interfaces/user.interfaces.ts";
 
 const UserSchema = new Schema<UserStored>(
   {

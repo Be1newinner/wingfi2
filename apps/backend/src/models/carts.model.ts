@@ -1,20 +1,30 @@
+// src/models/cart.model.ts
 import { model, Schema, Types } from "mongoose";
-import { productSchema } from "../models/product.model.ts";
+import { productSchema } from "./product.model.ts";
+import {
+  ICart,
+  ICartItem,
+  ICartPricing,
+} from "../interfaces/cart.interfaces.ts";
 
-const CartPricingSchema = new Schema({
-  subtotal: { type: Number, required: true, min: 0, default: 0 },
-  tax: { type: Number, required: true, min: 0, default: 0 },
-  discount: { type: Number, required: true, min: 0, default: 0 },
-});
+export const cartPricingSchema = new Schema<ICartPricing>(
+  {
+    subtotal: { type: Number, required: true, min: 0, default: 0 },
+    tax: { type: Number, required: true, min: 0, default: 0 },
+    discount: { type: Number, required: true, min: 0, default: 0 },
+  },
+  { _id: false }
+);
 
-const cartItemSchema = new Schema(
+export const cartItemSchema = new Schema<ICartItem>(
   {
     _id: {
       type: Types.ObjectId,
       ref: "products",
+      required: true,
     },
     qty: { type: Number, required: true, min: 0, default: 0 },
-    subtotal: { type: Number, required: true, min: 0, default: 0 }, // ( this is price - discount on this product ) * qty
+    subtotal: { type: Number, required: true, min: 0, default: 0 },
   },
   {
     autoIndex: true,
@@ -24,24 +34,23 @@ const cartItemSchema = new Schema(
 
 cartItemSchema.add(productSchema);
 
-const CartSchema = new Schema(
+export const cartSchema = new Schema<ICart>(
   {
-    items: { type: [cartItemSchema], required: true },
     _id: {
       type: Types.ObjectId,
       ref: "users",
+      required: true,
     },
+    items: { type: [cartItemSchema], required: true },
     total: { type: Number, required: true, min: 0, default: 0 },
+    subtotal: { type: Number, required: true, min: 0, default: 0 },
+    tax: { type: Number, required: true, min: 0, default: 0 },
+    discount: { type: Number, required: true, min: 0, default: 0 },
   },
   {
     autoIndex: true,
-    _id: false,
     timestamps: true,
   }
 );
 
-CartSchema.add(CartPricingSchema);
-
-const CartModel = model("Cart", CartSchema);
-
-export { CartPricingSchema, cartItemSchema, CartModel };
+export const CartModel = model<ICart>("Cart", cartSchema);

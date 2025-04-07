@@ -1,9 +1,10 @@
+// src/models/order.model.ts
 import { Schema, model, Types } from "mongoose";
-import { cartItemSchema, CartPricingSchema } from "./carts.model.js";
+import { cartItemSchema, cartPricingSchema } from "./carts.model.js";
 import { AddressBaseSchema } from "./address.models.js";
+import { IOrder } from "../interfaces/order.interfaces.ts";
 
-// PricingSchema
-const OrderSchema = new Schema(
+const orderSchema = new Schema<IOrder>(
   {
     address: { type: AddressBaseSchema, required: true },
     items: {
@@ -25,8 +26,6 @@ const OrderSchema = new Schema(
       ],
       default: "Placed",
     },
-
-    // ORDER PROGRESS TIMESTAMPS
     orderTimeline: {
       placedAt: { type: Date, default: Date.now, required: true },
       confirmedAt: { type: Date },
@@ -43,8 +42,6 @@ const OrderSchema = new Schema(
   }
 );
 
-OrderSchema.add(CartPricingSchema);
+orderSchema.add(cartPricingSchema);
 
-const OrderModel = model("Order", OrderSchema);
-
-export { OrderModel };
+export const OrderModel = model<IOrder>("Order", orderSchema);
