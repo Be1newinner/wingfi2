@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
-import { AddressModel } from "../models/address.models.ts";
-import { CartModel } from "../models/carts.model.ts";
-import { OrderModel } from "../models/orders.model.ts";
-import AppError from "../utils/AppError.ts";
+import { AddressModel } from "../models/address.models";
+import { CartModel } from "../models/carts.model";
+import { OrderModel } from "../models/orders.model";
+import AppError from "../utils/AppError";
 
 const getOrderDetailsByID = (
   req: Request,

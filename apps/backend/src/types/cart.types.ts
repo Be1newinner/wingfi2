@@ -1,6 +1,6 @@
-// src/interfaces/cart.interface.ts
+// src/interfaces/cart.interface
 import { Document, ObjectId } from "mongoose";
-import { IProduct } from "./product.interfaces.ts";
+import { IProduct } from "./product.types";
 
 export interface ICartPricing {
   subtotal: number;

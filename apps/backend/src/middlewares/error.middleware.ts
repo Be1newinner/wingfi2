@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import { SendResponse } from "../utils/JsonResponse.ts";
-import AppError from "../utils/AppError.ts";
+import { SendResponse } from "../utils/JsonResponse";
+import AppError from "../utils/AppError";
 
 export function errorHandler(
   err: unknown,

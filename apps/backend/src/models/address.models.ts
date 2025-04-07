@@ -1,6 +1,6 @@
 // src/models/address.model.ts
 import { Schema, model, Document, Types } from "mongoose";
-import { IAddress, IAddressBase } from "../interfaces/address.interfaces.ts";
+import { IAddress, IAddressBase } from "../types/address.types";
 
 export const AddressBaseSchema = new Schema<IAddressBase>(
   {

@@ -1,8 +1,8 @@
-// src/models/order.model.ts
+// src/models/order.model
 import { Schema, model, Types } from "mongoose";
-import { cartItemSchema, cartPricingSchema } from "./carts.model.js";
-import { AddressBaseSchema } from "./address.models.js";
-import { IOrder } from "../interfaces/order.interfaces.ts";
+import { cartItemSchema, cartPricingSchema } from "./carts.model";
+import { AddressBaseSchema } from "./address.models";
+import { IOrder } from "../types/order.types";
 
 const orderSchema = new Schema<IOrder>(
   {

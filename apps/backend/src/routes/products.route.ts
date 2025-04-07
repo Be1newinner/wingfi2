@@ -7,9 +7,9 @@ import {
   fetchProductController,
   fetchProductsListController,
   updateSingleProductController,
-} from "../controllers/products.controllers.ts";
+} from "../controllers/products.controllers";
 
-import { VerifyAccessTokenMiddleWare } from "../middlewares/VerifyAccessToken.ts";
+import { VerifyAccessTokenMiddleWare } from "../middlewares/VerifyAccessToken";
 
 export const ProductRouter = Router();
 

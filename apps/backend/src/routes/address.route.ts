@@ -5,7 +5,7 @@ import {
   getAllAddressByUID,
   getSingleAddressByID,
   updateAddressByID,
-} from "../controllers/address.controller.ts";
+} from "../controllers/address.controller";
 
 const AddressRouter = Router();
 

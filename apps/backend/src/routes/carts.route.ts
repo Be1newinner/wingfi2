@@ -2,9 +2,9 @@ import { Router } from "express";
 import {
   getCartController,
   increaseItemQuanityInCartController,
-} from "../controllers/carts.controller.ts";
+} from "../controllers/carts.controller";
 
-import { VerifyAccessTokenMiddleWare } from "../middlewares/VerifyAccessToken.ts";
+import { VerifyAccessTokenMiddleWare } from "../middlewares/VerifyAccessToken";
 
 const CartRouter = Router();
 

@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from "express";
-import { UserModel } from "../models/users.model.ts";
-import { verifyHash } from "../utils/hashing.ts";
-import { decodeToken, generateLoginTokens } from "../utils/tokens.ts";
-import AppError from "../utils/AppError.ts";
-import { SendResponse } from "../utils/JsonResponse.ts";
-import { UserStored } from "../interfaces/user.interfaces.ts";
+import { UserModel } from "../models/users.model";
+import { verifyHash } from "../utils/hashing";
+import { decodeToken, generateLoginTokens } from "../utils/tokens";
+import AppError from "../utils/AppError";
+import { SendResponse } from "../utils/JsonResponse";
+import { UserStored } from "../types/user.types";
 
 export async function loginController(
   req: Request,

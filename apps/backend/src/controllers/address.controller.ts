@@ -1,8 +1,8 @@
 import { Types } from "mongoose";
-import { AddressModel } from "../models/address.models.ts";
-import { UserModel } from "../models/users.model.ts";
+import { AddressModel } from "../models/address.models";
+import { UserModel } from "../models/users.model";
 import { NextFunction, Request, Response } from "express";
-import AppError from "../utils/AppError.ts";
+import AppError from "../utils/AppError";
 
 async function getAllAddressByUID(
   req: Request,

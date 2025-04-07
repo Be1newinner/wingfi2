@@ -1,11 +1,11 @@
 // src/models/cart.model.ts
 import { model, Schema, Types } from "mongoose";
-import { productSchema } from "./product.model.ts";
+import { productSchema } from "./product.model";
 import {
   ICart,
   ICartItem,
   ICartPricing,
-} from "../interfaces/cart.interfaces.ts";
+} from "../types/cart.types";
 
 export const cartPricingSchema = new Schema<ICartPricing>(
   {

@@ -1,12 +1,13 @@
 import "dotenv/config";
+
 import express from "express";
-import { connectDB } from "./config/db.ts";
-import { AuthRouter } from "./routes/users.route.ts";
-import { setupSwagger } from "./config/swagger.ts";
-import { CartRouter } from "./routes/carts.route.ts";
-import { AddressRouter } from "./routes/address.route.ts";
-import { OrderRouter } from "./routes/orders.route.ts";
-import { ProductRouter } from "./routes/products.route.ts";
+import { connectDB } from "./config/db";
+import { AuthRouter } from "./routes/users.route";
+import { setupSwagger } from "./config/swagger";
+import { CartRouter } from "./routes/carts.route";
+import { AddressRouter } from "./routes/address.route";
+import { OrderRouter } from "./routes/orders.route";
+import { ProductRouter } from "./routes/products.route";
 
 const app = express();
 const PORT = process.env.PORT || 8000;

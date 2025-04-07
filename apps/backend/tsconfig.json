@@ -1,16 +1,18 @@
 {
   "compilerOptions": {
-    "target": "ES6",
-    "module": "NodeNext",
-    "rootDir": "./src",
-    "outDir": "./dist",
-    "strict": true,
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
     "skipLibCheck": true,
-    "moduleResolution": "nodenext",
-    "allowImportingTsExtensions": true,
-    "noEmit": true
+    "resolveJsonModule": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "eslint.config.js", "loader.mjs", "dist", "__tests__"]
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
 }

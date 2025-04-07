@@ -5,9 +5,9 @@ import {
   getAllOrdersByUID,
   getOrderDetailsByID,
   updateOrderByID,
-} from "../controllers/orders.controller.ts";
+} from "../controllers/orders.controller";
 
-import { VerifyAccessTokenMiddleWare } from "../middlewares/VerifyAccessToken.ts";
+import { VerifyAccessTokenMiddleWare } from "../middlewares/VerifyAccessToken";
 
 const OrderRouter = Router();
 

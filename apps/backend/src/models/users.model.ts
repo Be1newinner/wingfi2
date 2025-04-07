@@ -1,6 +1,6 @@
 import { model, Schema } from "mongoose";
-import { hashing } from "../utils/hashing.ts";
-import { GENDER, ROLE, UserStored } from "../interfaces/user.interfaces.ts";
+import { hashing } from "../utils/hashing";
+import { GENDER, ROLE, UserStored } from "../types/user.types";
 
 const UserSchema = new Schema<UserStored>(
   {

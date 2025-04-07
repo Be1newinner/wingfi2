@@ -1,5 +1,4 @@
-import "dotenv/config";
-import { StringValue } from "../types.ts";
+import { StringValue } from "../types";
 
 const DEFAULT_ENV_VALUES: Record<string, string> = {
   PORT: "5000",

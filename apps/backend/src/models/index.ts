@@ -1,8 +1,8 @@
-import { AddressModel } from "./address.models.ts";
-import { CartModel } from "./carts.model.ts";
-import { OrderModel } from "./orders.model.ts";
-import { ProductModel } from "./product.model.ts";
-import { UserModel } from "./users.model.ts";
+import { AddressModel } from "./address.models";
+import { CartModel } from "./carts.model";
+import { OrderModel } from "./orders.model";
+import { ProductModel } from "./product.model";
+import { UserModel } from "./users.model";
 
 export default {
   ProductModel,

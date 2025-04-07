@@ -1,10 +1,10 @@
-import AppError from "../utils/AppError.ts";
+import AppError from "../utils/AppError";
 
-import { CartModel } from "../models/carts.model.ts";
-import { TAX } from "../constants/rates.ts";
-import { ProductModel } from "../models/product.model.ts";
+import { CartModel } from "../models/carts.model";
+import { TAX } from "../constants/rates";
+import { ProductModel } from "../models/product.model";
 import { Types } from "mongoose";
-import { UserModel } from "../models/users.model.ts";
+import { UserModel } from "../models/users.model";
 import { NextFunction, Request, Response } from "express";
 
 async function increaseItemQuanityInCartController(

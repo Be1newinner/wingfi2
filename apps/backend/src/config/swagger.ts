@@ -1,8 +1,8 @@
 import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 import { Express } from "express";
-import { mongooseModelToSwagger } from "../utils/mongooseToSwagger.ts";
-import AllMongooseModels from "../models/index.ts";
+import { mongooseModelToSwagger } from "../utils/mongooseToSwagger";
+import AllMongooseModels from "../models";
 import { Model } from "mongoose";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

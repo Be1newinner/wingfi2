@@ -1,7 +1,7 @@
-// src/interfaces/order.interface.ts
+// src/interfaces/order.interface
 import { Document, ObjectId } from "mongoose";
-import { ICartItem, ICartPricing } from "./cart.interfaces.ts";
-import { IAddressBase } from "./address.interfaces.ts";
+import { ICartItem, ICartPricing } from "./cart.types";
+import { IAddressBase } from "./address.types";
 
 export type OrderStatus =
   | "Placed"

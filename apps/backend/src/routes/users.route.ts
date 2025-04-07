@@ -3,7 +3,7 @@ import {
   loginController,
   refreshToken,
   registerController,
-} from "../controllers/users.controller.ts";
+} from "../controllers/users.controller";
 
 export const AuthRouter = Router();
 

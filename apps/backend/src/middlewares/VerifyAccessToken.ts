@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import { decodeToken } from "../utils/tokens.ts";
-import AppError from "../utils/AppError.ts";
+import { decodeToken } from "../utils/tokens";
+import AppError from "../utils/AppError";
 
 export async function VerifyAccessTokenMiddleWare(
   req: Request,

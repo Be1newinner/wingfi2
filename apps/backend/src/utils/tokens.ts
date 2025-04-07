@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { ROLE } from "../interfaces/user.interfaces.ts";
+import { ROLE } from "../types/user.types";
 
 type Unit =
   | "Years"

@@ -1,4 +1,4 @@
-// src/interfaces/user.interface.ts
+// src/interfaces/user.interface
 import { Document } from "mongoose";
 
 export enum GENDER {

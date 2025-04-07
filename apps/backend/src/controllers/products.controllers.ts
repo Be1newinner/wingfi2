@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
-import { SendResponse } from "../utils/JsonResponse.ts";
-import { ProductModel } from "../models/product.model.ts";
-import AppError from "../utils/AppError.ts";
+import { SendResponse } from "../utils/JsonResponse";
+import { ProductModel } from "../models/product.model";
+import AppError from "../utils/AppError";
 import { MongooseError } from "mongoose";
 
 export const fetchProductsListController = async (
