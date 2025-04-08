@@ -1,3 +1,4 @@
+import { IMAGE_SIZES, IMAGE_TYPES_ENUM } from "@/config/constants";
 import {
   deleteFileFromFirebaseStorage,
   uploadFileToFirebaseStorage,
@@ -5,6 +6,32 @@ import {
 import AppError from "@/utils/AppError";
 import { SendResponse } from "@/utils/JsonResponse";
 import { NextFunction, Request, Response } from "express";
+import sharp from "sharp";
+
+export async function compressImage(
+  file: Express.MulterMulter.File,
+  type: IMAGE_TYPES_ENUM
+) {
+  const config = IMAGE_SIZES[type];
+
+  const buffer = await sharp(file.buffer)
+    .resize(config.width, config.height, {
+      fit: "cover",
+    })
+    .toFormat("webp", {
+      quality: 80,
+    })
+    .toBuffer();
+
+  const updatedFile: Express.MulterMulter.File = {
+    ...file,
+    originalname: file.originalname.replace(/\.\w+$/, ".webp"),
+    mimetype: "image/webp",
+    buffer,
+  };
+
+  return updatedFile;
+}
 
 export async function uploadImagesController(
   req: Request,
@@ -13,14 +40,27 @@ export async function uploadImagesController(
 ) {
   try {
     const files = req.files as Express.MulterMulter.File[];
+    const typeParam = req.query?.type;
+
+    if (
+      !typeParam ||
+      !Object.values(IMAGE_TYPES_ENUM).includes(typeParam as IMAGE_TYPES_ENUM)
+    ) {
+      return next(new AppError("Invalid image type provided", 400));
+    }
+
+    const type = typeParam as IMAGE_TYPES_ENUM;
 
     if (!files || files.length === 0) {
-      throw new AppError("No images provided", 400);
+      return next(new AppError("No images provided", 400));
     }
 
     const uploadPromises = files.map((file) =>
-      uploadFileToFirebaseStorage(file)
+      compressImage(file, type).then((compressedFile) =>
+        uploadFileToFirebaseStorage(compressedFile)
+      )
     );
+
     const uploadedUrls = await Promise.all(uploadPromises);
 
     SendResponse(res, {
@@ -68,4 +108,3 @@ export async function deleteImagesController(
     );
   }
 }
-
