@@ -11,7 +11,8 @@ import { OrderRouter } from "./routes/orders.route";
 import { ProductRouter } from "./routes/products.route";
 import { errorHandler } from "./middlewares/error.middleware";
 import { UploadRouter } from "./routes/upload.route";
-import logger, { streamToElastic } from "./utils/logger";
+import { streamToElastic } from "./utils/logger";
+import { loggerMiddleware } from "./middlewares/logger.middleware";
 
 const app = express();
 const PORT = process.env.PORT || 8000;
@@ -19,32 +20,9 @@ const PORT = process.env.PORT || 8000;
 app.use(express.json());
 setupSwagger(app);
 
-app.use((req, res, next) => {
-  const start = Date.now();
-
-  res.on("finish", () => {
-    const duration = Date.now() - start;
-
-    logger.info(
-      {
-        method: req.method,
-        url: req.originalUrl,
-        ip: req.ip,
-        userAgent: req.headers["user-agent"],
-        query: req.query,
-        statusCode: res.statusCode,
-        duration: `${duration}ms`,
-        timestamp: new Date().toISOString(),
-      },
-      "HTTP Request Completed"
-    );
-  });
-
-  next();
-});
+app.use(loggerMiddleware);
 
 app.get("/", function (_: express.Request, res: express.Response) {
-  logger.info("WINGFI SERVER HAS STARTED! for np");
   res.send({ message: "Welcome to Wingfi Apis!" });
 });
 
