@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { SendResponse } from "../utils/JsonResponse";
 import AppError from "../utils/AppError";
+import logger from "@/utils/logger";
 
 export function errorHandler(
   err: unknown,
@@ -20,6 +21,9 @@ export function errorHandler(
     message = err.message;
     status_code = err.statusCode;
   }
-
+  logger.error(
+    { error: message, status_code },
+    "Error while fetching products"
+  );
   SendResponse(res, { message, status_code, status: "error" });
 }

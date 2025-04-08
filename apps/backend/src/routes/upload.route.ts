@@ -1,5 +1,4 @@
 import { Router } from "express";
-import {} from "../controllers/users.controller";
 import { uploadProductImage } from "@/middlewares/upload.middleware";
 import {
   deleteImagesController,
