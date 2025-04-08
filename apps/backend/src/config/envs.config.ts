@@ -7,13 +7,15 @@ const DEFAULT_ENV_VALUES: Record<string, string> = {
   REFRESH_TOKEN_EXPIRY: "7d",
   SMTP_PORT: "587",
   FRONTEND_URL: "http://localhost:3000",
+  SMTP_HOST: "localhost",
+  SMTP_USER: "user",
+  SMTP_PASS: "password",
 };
 
 const REQUIRED_ENV_VARS = [
   "PORT",
   "MONGODB_URI",
-  "ACCESS_TOKEN_SECRET",
-  "REFRESH_TOKEN_SECRET",
+  "TOKEN_SECRET",
   "ACCESS_TOKEN_EXPIRY",
   "REFRESH_TOKEN_EXPIRY",
   "SMTP_HOST",

@@ -1,33 +1,57 @@
 import { bucket } from "@/config/firebaseInit";
-import path from "node:path";
+import path from "path";
+import { v4 as uuidv4 } from "uuid";
+// import type { Multer } from "multer";
 
-export async function uploadFileToFirestore(filePath, destination: string) {
-  const newFileName = Date.now() + path.extname(filePath.originalname);
-  const destinationPath = destination
-    ? `rabbit-turtle/${destination}/${newFileName}`
-    : `rabbit-turtle/${newFileName}`;
+/**
+ * Uploads a file buffer to Firebase Storage and returns its public URL
+ * @param file The Multer file object (memory storage)
+ * @param destination Optional folder path inside the bucket
+ * @returns Public URL of the uploaded file
+ */
 
-  await bucket.upload(filePath.path, { destination: destinationPath });
+export async function uploadFileToFirebaseStorage(
+  file: Express.MulterMulter.File,
+  destination: string = "wingfi"
+): Promise<string> {
+  const extension = path.extname(file.originalname);
+  const filename = `${uuidv4()}-${Date.now()}${extension}`;
 
-  await bucket.file(destinationPath).makePublic();
+  const destinationPath = destination ? `${destination}/${filename}` : filename;
 
-  const publicUrl = `https://storage.googleapis.com/${bucket.name}/${destinationPath}`;
+  const fileRef = bucket.file(destinationPath);
 
-  return publicUrl;
+  await fileRef.save(file.buffer, {
+    metadata: {
+      contentType: file.mimetype,
+    },
+  });
+
+  await fileRef.makePublic(); // or use signed URL if privacy needed
+
+  return `https://storage.googleapis.com/${bucket.name}/${destinationPath}`;
 }
-
-export async function deleteFileFromFirestore(fileUrl: string) {
+export async function deleteFileFromFirebaseStorage(fileUrl: string) {
   const baseUrl = `https://storage.googleapis.com/${bucket.name}/`;
 
   if (!fileUrl || !fileUrl.startsWith(baseUrl)) {
-    throw new Error(
-      "Invalid file URL. Must be from the correct Firebase Storage bucket."
-    );
+    return {
+      error: "Invalid file URL",
+      deleted: false,
+      url: fileUrl,
+    };
   }
 
-  const filePath = fileUrl.replace(baseUrl, "");
+  try {
+    const filePath = fileUrl.replace(baseUrl, "");
+    await bucket.file(filePath).delete();
 
-  await bucket.file(filePath).delete();
-
-  return { baseUrl, deleted: true };
+    return { url: fileUrl, deleted: true };
+  } catch (err) {
+    return {
+      error: (err as Error).message,
+      deleted: false,
+      url: fileUrl,
+    };
+  }
 }

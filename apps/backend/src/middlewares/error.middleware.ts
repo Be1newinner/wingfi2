@@ -9,7 +9,7 @@ export function errorHandler(
   res: Response,
   _next: NextFunction
 ) {
-  // console.error("Error:", err);
+  console.error("Error:", err);
   // console.log({ ERROR: "ERROR MIDDLEWARE" });
 
   if (!res || typeof res.status !== "function") return;

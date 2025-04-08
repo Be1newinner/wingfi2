@@ -6,12 +6,12 @@ export const streamToElastic = createWriteStream({
   //   consistency: "one",
   node: "http://localhost:9200",
   flushInterval: 50,
-  "es-version": 7,
+  esVersion: 7,
 });
 
 const streams = multistream([
-  { stream: process.stdout }, // local terminal
-  { stream: streamToElastic }, // elastic
+  // { stream: process.stdout }, // local terminal
+  // { stream: streamToElastic }, // elastic
 ]);
 
 const logger = pino(

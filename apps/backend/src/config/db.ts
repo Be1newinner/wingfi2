@@ -2,7 +2,6 @@ import { connect, disconnect } from "mongoose";
 
 export async function connectDB() {
   const MONGODB_URI = process.env.MONGODB_URI;
-  console.log("MONGODB_URI", MONGODB_URI);
   if (!MONGODB_URI) throw new Error("MONGODB URI NOT PROVIDED!");
 
   try {
