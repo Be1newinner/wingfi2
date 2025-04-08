@@ -1,6 +1,6 @@
 import AppError from "../utils/AppError";
 import { CartModel } from "../models/carts.model";
-import { TAX } from "../constants/rates";
+import { TAX } from "../config/constants";
 import { ProductModel } from "../models/product.model";
 import { Types } from "mongoose";
 import { UserModel } from "../models/users.model";

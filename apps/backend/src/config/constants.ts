@@ -18,3 +18,5 @@ export const IMAGE_SIZES: Record<
 export const IMAGE_TYPES: IMAGE_TYPES_ENUM[] = Object.keys(
   IMAGE_SIZES
 ) as IMAGE_TYPES_ENUM[];
+
+export const TAX = 0.18;
