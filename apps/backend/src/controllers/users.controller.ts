@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { UserModel } from "../models/users.model";
-import { verifyHash } from "../utils/hashing";
+import { hashing, verifyHash } from "../utils/hashing";
 import { decodeToken, generateLoginTokens } from "../utils/tokens";
 import AppError from "../utils/AppError";
 import { SendResponse } from "../utils/JsonResponse";
@@ -79,15 +79,13 @@ export async function registerController(
   next: NextFunction
 ) {
   try {
-    const { email, password, name, gender, role, phone } =
-      req.body as RegisterDTO;
+    const { email, password, name, gender, phone } = req.body as RegisterDTO;
 
     const userData = new UserModel({
       email,
       password,
       name,
       gender,
-      role,
       phone,
     });
 
@@ -166,5 +164,38 @@ export async function refreshToken(
       (error as Error).message || "Refresh Token Generation Failed!";
 
     next(new AppError(errorMessage, 401));
+  }
+}
+
+export async function resetPassword(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
+  try {
+    const { email, password } = req.body;
+    const data = await hashing(password);
+    console.log({ data });
+
+    const updateResult = await UserModel.updateOne(
+      { email },
+      { $set: { password } }
+    );
+
+    if (!updateResult.matchedCount)
+      return next(
+        new AppError("Failed to update password. User not found!", 404)
+      );
+
+    SendResponse(res, {
+      message: "Reset password success!",
+      status_code: 200,
+    });
+  } catch (error) {
+    // console.error(error);
+
+    const errorMessage = (error as Error).message || "Reset password failed!";
+
+    next(new AppError(errorMessage, 500));
   }
 }

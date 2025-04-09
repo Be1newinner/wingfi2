@@ -3,6 +3,7 @@ import {
   loginController,
   refreshToken,
   registerController,
+  resetPassword,
 } from "../controllers/users.controller";
 import { validate_dto_middleWare } from "@/middlewares/validateDTO.middleware";
 import { LoginDTO } from "@/dto/auth/login.dto";
@@ -82,7 +83,7 @@ export const AuthRouter = Router();
 
 /**
  * @swagger
- * /auth/login:
+ * /users/login:
  *   post:
  *     summary: User login
  *     tags: [Authentication]
@@ -125,7 +126,7 @@ AuthRouter.post("/login", validate_dto_middleWare(LoginDTO), loginController);
 
 /**
  * @swagger
- * /auth/register:
+ * /users/register:
  *   post:
  *     summary: User registration
  *     tags: [Authentication]
@@ -151,7 +152,7 @@ AuthRouter.post(
 
 /**
  * @swagger
- * /auth/refresh-token:
+ * /users/refresh-token:
  *   post:
  *     summary: Refresh Access Token
  *     tags: [Authentication]
@@ -166,3 +167,5 @@ AuthRouter.post(
  *         description: Failed to update token
  */
 AuthRouter.post("/refresh-token", refreshToken);
+
+AuthRouter.post("/reset-password", resetPassword);

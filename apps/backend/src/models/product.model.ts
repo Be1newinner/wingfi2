@@ -18,7 +18,6 @@ export const productSchema = new Schema<IProduct>(
       required: true,
     },
     mrp: Number,
-    image: String,
     images: [String],
     variants: [
       {

@@ -7,11 +7,11 @@ export class GetProductsQueryDTO {
   @IsInt()
   @Min(1)
   @Max(8)
-  limit?: number;
+  limit?: number = 8;
 
   @IsOptional()
   @Type(() => Number)
   @IsInt()
   @Min(1)
-  page?: number;
+  page?: number = 1;
 }

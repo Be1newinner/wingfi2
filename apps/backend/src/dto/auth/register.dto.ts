@@ -1,4 +1,4 @@
-import { GENDER, ROLE } from "@/types/user.types";
+import { GENDER } from "@/types/user.types";
 import {
   IsEmail,
   IsEnum,
@@ -21,9 +21,6 @@ export class RegisterDTO {
 
   @IsEnum(GENDER)
   gender!: string;
-
-  @IsEnum(ROLE)
-  role!: string;
 
   @IsPhoneNumber("IN")
   phone!: string;
