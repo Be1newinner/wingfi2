@@ -18,10 +18,6 @@ const UserSchema = new Schema<UserStored>(
       minlength: 6,
       maxlength: 12,
     },
-    refreshToken: {
-      type: String,
-      required: true,
-    },
   },
   {
     autoIndex: true,

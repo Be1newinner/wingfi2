@@ -47,7 +47,6 @@ export const AuthRouter = Router();
  *         - email
  *         - password
  *         - gender
- *         - role
  *         - phone
  *       properties:
  *         name:
@@ -65,10 +64,6 @@ export const AuthRouter = Router();
  *           type: string
  *           enum: [MALE, FEMALE, OTHER]
  *           description: Gender of the user
- *         role:
- *           type: string
- *           enum: [CLIENT, VENDOR, ADMIN]
- *           description: Role assigned to the user
  *         phone:
  *           type: string
  *           description: User's phone number
@@ -77,7 +72,6 @@ export const AuthRouter = Router();
  *         email: "john@example.com"
  *         password: "securepassword"
  *         gender: "MALE"
- *         role: "CLIENT"
  *         phone: "9876543210"
  */
 
@@ -168,4 +162,26 @@ AuthRouter.post(
  */
 AuthRouter.post("/refresh-token", refreshToken);
 
+/**
+ * @swagger
+ * /users/reset-password:
+ *   post:
+ *     summary: Reset User Password
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/UserLogin'
+ *     responses:
+ *       200:
+ *         description: Token refreshed successfully
+ *       401:
+ *         description: Missing refresh token
+ *       403:
+ *         description: Invalid refresh token
+ *       404:
+ *         description: Failed to update token
+ */
 AuthRouter.post("/reset-password", resetPassword);

@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import { ROLE } from "../types/user.types";
+import { ENV_CONFIGS } from "@/config/envs.config";
 
 type Unit =
   | "Years"
@@ -55,7 +56,7 @@ export async function generateToken(
   data: JwtPayload,
   expiry: JWT_EXPIRY_FORMAT
 ): Promise<string> {
-  const secret = process.env.JWT_SECRET;
+  const secret = ENV_CONFIGS["JWT_SECRET"];
   if (!secret) throw new Error("JWT_SECRET is required!");
 
   return jwt.sign({ data }, secret, { expiresIn: expiry });
@@ -107,7 +108,7 @@ export async function generateRefreshToken({ email, role, uid }: TokenPayload) {
 }
 
 export async function decodeToken(token: string): Promise<TokenPayload> {
-  const secret = process.env.JWT_SECRET;
+  const secret = ENV_CONFIGS["JWT_SECRET"];
   if (!secret) throw new Error("JWT_SECRET is required!");
 
   return (await jwt.verify(token, secret)) as TokenPayload;

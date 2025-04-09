@@ -15,7 +15,7 @@ const DEFAULT_ENV_VALUES: Record<string, string> = {
 const REQUIRED_ENV_VARS = [
   "PORT",
   "MONGODB_URI",
-  "TOKEN_SECRET",
+  "JWT_SECRET",
   "ACCESS_TOKEN_EXPIRY",
   "REFRESH_TOKEN_EXPIRY",
   "SMTP_HOST",

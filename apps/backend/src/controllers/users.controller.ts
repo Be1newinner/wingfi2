@@ -91,12 +91,16 @@ export async function registerController(
 
     const user = await userData.save();
 
-    if (!user)
-      return next(new AppError("User Logged In Failed. No User Found!", 404));
+    const userWithoutPassword = (({ password: _password, ...rest }) => rest)(
+      user.toObject()
+    );
+
+    if (!user) return next(new AppError("User register failed.", 404));
 
     SendResponse(res, {
-      message: "User Logged In Success!",
-      data: user,
+      message: "User register success!",
+      data: userWithoutPassword,
+      // data: "user",
       status_code: 200,
     });
   } catch (error) {
@@ -174,12 +178,15 @@ export async function resetPassword(
 ): Promise<void> {
   try {
     const { email, password } = req.body;
-    const data = await hashing(password);
-    console.log({ data });
+    const hashedPassword = await hashing(password);
+    console.log({ hashedPassword });
+
+    if (!hashedPassword)
+      return next(new AppError("Unable to change password!", 500));
 
     const updateResult = await UserModel.updateOne(
       { email },
-      { $set: { password } }
+      { $set: { password: hashedPassword } }
     );
 
     if (!updateResult.matchedCount)

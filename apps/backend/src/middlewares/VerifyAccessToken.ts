@@ -10,6 +10,8 @@ export async function VerifyAccessTokenMiddleWare(
   try {
     let token = req.headers["authorization"];
 
+    console.log({ token: req.headers });
+
     if (!token) return next(new AppError("ACCESS TOKEN NOT FOUND!", 401));
 
     token = token.replace("Bearer ", "");
