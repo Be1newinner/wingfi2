@@ -5,125 +5,55 @@ import {
   getAllAddressByUID,
   getSingleAddressByID,
   updateAddressByID,
-} from "../controllers/address.controller";
+} from "@/controllers/address.controller";
+import { VerifyAccessTokenMiddleWare } from "@/middlewares/VerifyAccessToken";
+import { validateRequest } from "@/middlewares/validate.middleware";
+import {
+  createAddressSchema,
+  getAddressByUidParamsSchema,
+  getAddressByUidQuerySchema,
+  updateAddressIDSchema,
+  updateAddressSchema,
+} from "@/validations/address.validation";
 
 const AddressRouter = Router();
 
-/**
- * @swagger
- * tags:
- *   name: Address
- *   description: User address management
- */
+AddressRouter.get(
+  "/all/:uid",
+  VerifyAccessTokenMiddleWare,
+  validateRequest({
+    query: getAddressByUidQuerySchema,
+    params: getAddressByUidParamsSchema,
+  }),
+  getAllAddressByUID
+);
 
-/**
- * @swagger
- * /address/all/{uid}:
- *   get:
- *     summary: Get all addresses of a user
- *     tags: [Address]
- *     parameters:
- *       - in: path
- *         name: uid
- *         schema:
- *           type: string
- *         required: true
- *         description: User ID
- *       - in: query
- *         name: page
- *         schema:
- *           type: integer
- *         description: Page number
- *       - in: query
- *         name: limit
- *         schema:
- *           type: integer
- *         description: Items per page
- *     responses:
- *       200:
- *         description: List of addresses
- */
-AddressRouter.get("/all/:uid", getAllAddressByUID);
+AddressRouter.get(
+  "/:id",
+  VerifyAccessTokenMiddleWare,
+  validateRequest({ params: getAddressByUidParamsSchema }),
+  getSingleAddressByID
+);
 
-/**
- * @swagger
- * /address/{id}:
- *   get:
- *     summary: Get a single address by ID
- *     tags: [Address]
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: string
- *         required: true
- *         description: Address ID
- *     responses:
- *       200:
- *         description: Address object
- */
-AddressRouter.get("/:id", getSingleAddressByID);
+AddressRouter.post(
+  "/",
+  VerifyAccessTokenMiddleWare,
+  validateRequest({ body: createAddressSchema }),
+  addAddressByUID
+);
 
-/**
- * @swagger
- * /address/{id}:
- *   delete:
- *     summary: Delete an address by ID
- *     tags: [Address]
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: string
- *         required: true
- *         description: Address ID
- *     responses:
- *       200:
- *         description: Address deleted
- */
-AddressRouter.delete("/:id", deleteAddressByID);
+AddressRouter.patch(
+  "/:id",
+  VerifyAccessTokenMiddleWare,
+  validateRequest({ params: updateAddressIDSchema, body: updateAddressSchema }),
+  updateAddressByID
+);
 
-/**
- * @swagger
- * /address/{id}:
- *   patch:
- *     summary: Update an address by ID
- *     tags: [Address]
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: string
- *         required: true
- *         description: Address ID
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/AddressInput'
- *     responses:
- *       200:
- *         description: Address updated
- */
-AddressRouter.patch("/:id", updateAddressByID);
-
-/**
- * @swagger
- * /address:
- *   post:
- *     summary: Add a new address for a user
- *     tags: [Address]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/AddressInput'
- *     responses:
- *       201:
- *         description: Address created
- */
-AddressRouter.post("/", addAddressByUID);
+AddressRouter.delete(
+  "/:id",
+  VerifyAccessTokenMiddleWare,
+  validateRequest({ params: updateAddressIDSchema }),
+  deleteAddressByID
+);
 
 export { AddressRouter };
