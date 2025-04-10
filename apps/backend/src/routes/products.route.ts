@@ -6,12 +6,20 @@ import {
   deleteProductByID,
   fetchProductController,
   fetchProductsListController,
-  updateSingleProductController,
+  updateProductController,
 } from "../controllers/products.controllers";
 
 import { VerifyAccessTokenMiddleWare } from "../middlewares/VerifyAccessToken";
-import { validate_dto_middleWare } from "@/middlewares/validateDTO.middleware";
-import { GetProductsQueryDTO } from "@/dto/products/fetchProductsList.dto";
+import { validateRequest } from "@/middlewares/validate.middleware";
+import {
+  addListOfProductsZodSchema,
+  addProductZodSchema,
+  deleteProductZodSchema,
+  fetchProductsListZodSchema,
+  fetchProductZodSchema,
+  updateProductZodSchema,
+} from "@/validations/product.validation";
+import IsAdminMiddleware from "@/middlewares/isAdmin.middleware";
 
 export const ProductRouter = Router();
 
@@ -47,7 +55,7 @@ export const ProductRouter = Router();
  */
 ProductRouter.get(
   "/",
-  validate_dto_middleWare(GetProductsQueryDTO, "query"),
+  validateRequest({ query: fetchProductsListZodSchema }),
   fetchProductsListController
 );
 
@@ -78,6 +86,13 @@ ProductRouter.get(
  *       201:
  *         description: Product created
  */
+ProductRouter.patch(
+  "/",
+  VerifyAccessTokenMiddleWare,
+  IsAdminMiddleware,
+  validateRequest({ body: updateProductZodSchema }),
+  updateProductController
+);
 
 /**
  * @swagger
@@ -104,14 +119,21 @@ ProductRouter.get(
  *       200:
  *         description: Product updated
  */
-ProductRouter.use(VerifyAccessTokenMiddleWare)
-  .route("/")
-  .post(addProductController)
-  .patch(updateSingleProductController);
+ProductRouter.post(
+  "/",
+  VerifyAccessTokenMiddleWare,
+  IsAdminMiddleware,
+  validateRequest({ body: addProductZodSchema }),
+  addProductController
+);
 
-ProductRouter.use(VerifyAccessTokenMiddleWare)
-  .route("/bulk")
-  .post(addListOfProductsController);
+ProductRouter.post(
+  "/bulk",
+  VerifyAccessTokenMiddleWare,
+  IsAdminMiddleware,
+  validateRequest({ body: addListOfProductsZodSchema }),
+  addListOfProductsController
+);
 
 /**
  * @swagger
@@ -129,8 +151,11 @@ ProductRouter.use(VerifyAccessTokenMiddleWare)
  *       204:
  *         description: Product deleted
  */
-ProductRouter.use(VerifyAccessTokenMiddleWare).delete(
+ProductRouter.delete(
   "/:sku",
+  VerifyAccessTokenMiddleWare,
+  IsAdminMiddleware,
+  validateRequest({ query: deleteProductZodSchema }),
   deleteProductByID
 );
 
@@ -153,4 +178,8 @@ ProductRouter.use(VerifyAccessTokenMiddleWare).delete(
  *       404:
  *         description: Product not found
  */
-ProductRouter.route("/:sku").get(fetchProductController);
+ProductRouter.get(
+  "/:sku",
+  validateRequest({ query: fetchProductZodSchema }),
+  fetchProductController
+);

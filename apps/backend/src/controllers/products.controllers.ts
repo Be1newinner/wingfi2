@@ -1,8 +1,22 @@
 import { NextFunction, Request, Response } from "express";
 import { SendResponse } from "../utils/JsonResponse";
-import { ProductModel } from "../models/product.model";
 import AppError from "../utils/AppError";
 import { MongooseError } from "mongoose";
+import {
+  addListOfProductsService,
+  addProductService,
+  deleteProductService,
+  fetchProductService,
+  fetchProductsListService,
+  updateProductService,
+} from "@/services/products.service";
+import {
+  addProductZodType,
+  deleteProductZodType,
+  fetchProductsListZodType,
+  fetchProductZodType,
+  updateProductZodType,
+} from "@/validations/product.validation";
 
 export const fetchProductsListController = async (
   req: Request,
@@ -10,23 +24,9 @@ export const fetchProductsListController = async (
   next: NextFunction
 ) => {
   try {
-    const limit = Number(req.query.limit);
-    const page = Number(req.query?.page);
-    const skip = (page - 1) * limit;
-
-    // console.log({ limit, page });
-
-    const products = await ProductModel.find()
-      .select({
-        sku: true,
-        name: true,
-        price: true,
-        stock: true,
-        images: true,
-      })
-      .limit(limit)
-      .skip(skip)
-      .lean();
+    const products = await fetchProductsListService(
+      req.query as unknown as fetchProductsListZodType
+    );
 
     SendResponse(res, {
       status_code: 200,
@@ -51,14 +51,15 @@ export const fetchProductController = async (
   next: NextFunction
 ) => {
   try {
-    const { sku } = req.params;
-    const data = await ProductModel.findOne({ sku }).lean();
-
-    if (!data) return next(new AppError("Product not found!", 404));
+    const data = await fetchProductService(
+      req.params as fetchProductZodType,
+      next
+    );
 
     SendResponse(res, {
       status_code: 200,
       message: "Products fetched successfully!",
+      data,
     });
   } catch (error: unknown) {
     // console.error(error);
@@ -78,28 +79,15 @@ export const addProductController = async (
   next: NextFunction
 ) => {
   try {
-    const { sku, title, description, price, mrp, images, variants } = req.body;
+    const newProduct = await addProductService(req.body as addProductZodType);
 
-    if (!title || !price || !sku)
-      return next(new AppError("title, sku, and price are required!", 400));
-
-    const product = new ProductModel({
-      sku,
-      title,
-      description,
-      price,
-      mrp,
-      images,
-      variants,
-    });
-
-    const resp = await product.save();
-
-    SendResponse(res, {
-      status_code: 201,
-      message: "Product added successfully!",
-      meta: { id: resp._id },
-    });
+    if (newProduct) {
+      SendResponse(res, {
+        status_code: 201,
+        message: "Product added successfully!",
+        meta: { id: newProduct._id },
+      });
+    }
   } catch (error: unknown) {
     let statusCode = 500;
     let errMessage = "Product adding failed!";
@@ -126,12 +114,7 @@ export async function addListOfProductsController(
   next: NextFunction
 ) {
   try {
-    const body = req.body;
-
-    if (!Array.isArray(body) || body.length === 0)
-      return next(new AppError("Product list is required!", 400));
-
-    const data = await ProductModel.insertMany(body);
+    const data = await addListOfProductsService(req.body);
 
     SendResponse(res, {
       status_code: 201,
@@ -151,67 +134,28 @@ export async function addListOfProductsController(
 }
 
 // Update Single Product by SKU
-export async function updateSingleProductController(
+export const updateProductController = async (
   req: Request,
   res: Response,
   next: NextFunction
-) {
+) => {
   try {
-    const {
-      name,
-      category,
-      price,
-      mrp,
-      stock,
-      sku,
-      description,
-      rating,
-      images,
-    } = req.body;
-
-    if (!sku) return next(new AppError("SKU is Required!", 400));
-
-    if (
-      !(
-        name ||
-        category ||
-        price ||
-        mrp ||
-        stock ||
-        description ||
-        rating ||
-        images
-      )
-    )
-      return next(
-        new AppError("Atleast one field to update is required!", 400)
-      );
-
-    const updatedData = await ProductModel.findOneAndUpdate(
-      { sku },
-      { name, category, price, mrp, stock, description, rating },
-      { new: true }
+    const updated = await updateProductService(
+      req.body as updateProductZodType
     );
-
-    if (!updatedData) return next(new AppError("Product not found!", 404));
-
     SendResponse(res, {
+      data: updated,
       status_code: 200,
       message: "Product updated successfully!",
-      meta: { id: updatedData._id },
-      data: updatedData,
     });
   } catch (error) {
     // console.error(error);
-
     const errMessage =
-      error instanceof AppError ? error.message : "Product updating failed!";
-
+      error instanceof AppError ? error.message : "Failed to update product!";
     const errCode = error instanceof AppError ? error.statusCode : 500;
-
-    return next(new AppError(errMessage, errCode));
+    next(new AppError(errMessage, errCode));
   }
-}
+};
 
 // Delete Product by SKU
 export async function deleteProductByID(
@@ -220,25 +164,23 @@ export async function deleteProductByID(
   next: NextFunction
 ) {
   try {
-    const { sku } = req.params;
+    const deletedProduct = await deleteProductService(
+      req.params as deleteProductZodType,
+      next
+    );
 
-    const deletedProduct = await ProductModel.findOneAndDelete({ sku });
-
-    if (!deletedProduct) return next(new AppError("Product not found!", 404));
-
-    SendResponse(res, {
-      status_code: 204,
-      message: "Product deleted successfully!",
-      meta: { id: deletedProduct._id },
-    });
+    if (deletedProduct) {
+      SendResponse(res, {
+        status_code: 204,
+        message: "Product deleted successfully!",
+      });
+    }
   } catch (error) {
     // console.error(error);
 
     const errMessage =
       error instanceof AppError ? error.message : "Failed to delete product!";
-
     const errCode = error instanceof AppError ? error.statusCode : 500;
-
     return next(new AppError(errMessage, errCode));
   }
 }

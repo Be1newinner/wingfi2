@@ -5,7 +5,7 @@ import {
   registerController,
   resetPassword,
 } from "../controllers/users.controller";
-import { validate_dto_middleWare } from "@/middlewares/validateDTO.middleware";
+import { validate_dto_middleWare } from "@/middlewares/validate.middleware";
 import { LoginDTO } from "@/dto/auth/login.dto";
 import { RegisterDTO } from "@/dto/auth/register.dto";
 
