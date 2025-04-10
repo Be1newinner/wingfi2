@@ -10,7 +10,7 @@ import { VerifyAccessTokenMiddleWare } from "@/middlewares/VerifyAccessToken";
 import { validateRequest } from "@/middlewares/validate.middleware";
 import {
   createAddressSchema,
-  getAddressByUidParamsSchema,
+  getAddressByIdParamsSchema,
   getAddressByUidQuerySchema,
   updateAddressIDSchema,
   updateAddressSchema,
@@ -21,17 +21,14 @@ const AddressRouter = Router();
 AddressRouter.get(
   "/all/:uid",
   VerifyAccessTokenMiddleWare,
-  validateRequest({
-    query: getAddressByUidQuerySchema,
-    params: getAddressByUidParamsSchema,
-  }),
+  validateRequest({ query: getAddressByUidQuerySchema }),
   getAllAddressByUID
 );
 
 AddressRouter.get(
   "/:id",
   VerifyAccessTokenMiddleWare,
-  validateRequest({ params: getAddressByUidParamsSchema }),
+  validateRequest({ params: getAddressByIdParamsSchema }),
   getSingleAddressByID
 );
 

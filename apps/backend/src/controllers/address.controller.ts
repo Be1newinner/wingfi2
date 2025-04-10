@@ -8,11 +8,14 @@ export const getAllAddressByUID = async (
   next: NextFunction
 ) => {
   try {
-    const { uid } = req.params;
     const limit = Math.max(Math.min(Number(req.query.limit) || 6, 10), 1);
     const page = Math.max(Number(req.query.page) || 1, 1);
 
-    const data = await AddressService.getAllAddresses(uid, page, limit);
+    const data = await AddressService.getAllAddresses(
+      req.user?.uid || "",
+      page,
+      limit
+    );
     SendResponse(res, { data, message: "Addresses fetched", status_code: 200 });
   } catch (err) {
     next(err);
@@ -25,8 +28,7 @@ export const getSingleAddressByID = async (
   next: NextFunction
 ) => {
   try {
-    const { id } = req.params;
-    const data = await AddressService.getAddressById(id);
+    const data = await AddressService.getAddressById(req.params.id);
     if (!data) throw new Error("Address not found");
     SendResponse(res, { data, message: "Address fetched", status_code: 200 });
   } catch (err) {
@@ -53,8 +55,7 @@ export const updateAddressByID = async (
   next: NextFunction
 ) => {
   try {
-    const { id } = req.params;
-    const data = await AddressService.updateAddress(id, req.body);
+    const data = await AddressService.updateAddress(req.params.id, req.body);
     if (!data) throw new Error("Address not found");
     SendResponse(res, { data, message: "Address updated", status_code: 200 });
   } catch (err) {
@@ -68,8 +69,7 @@ export const deleteAddressByID = async (
   next: NextFunction
 ) => {
   try {
-    const { id } = req.params;
-    const result = await AddressService.deleteAddress(id);
+    const result = await AddressService.deleteAddress(req.params.id);
     if (!result.deletedCount) throw new Error("Address not deleted");
     SendResponse(res, { message: "Address deleted", status_code: 200 });
   } catch (err) {

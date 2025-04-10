@@ -26,10 +26,6 @@ export const updateAddressSchema = z.object({
   zipcode: z.string().optional(),
 });
 
-export const getAddressByUidParamsSchema = z.object({
-  uid: z.string().regex(/^[a-f\d]{24}$/i, "Invalid User ID"),
-});
-
 export const getAddressByUidQuerySchema = z.object({
   page: z
     .string()
